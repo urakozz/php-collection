@@ -98,6 +98,7 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
 
     foreach($array as $item)
     {
+      $this->assertInternalType('array', $item);
       $this->assertTrue(isset($item['key']));
       $this->assertFalse(isset($item['id']));
     }
