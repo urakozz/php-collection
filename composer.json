@@ -19,7 +19,7 @@
   },
 
   "suggest": {
-    "ext-curl": "Guzzle will use specific adapters if cURL is present"
+    "php": ">=5.5.15"
   },
 
   "autoload": {
