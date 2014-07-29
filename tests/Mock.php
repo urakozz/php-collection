@@ -7,6 +7,7 @@ namespace Kozz\Tests;
 
 
 use Kozz\Components\IArrayable;
+use stdClass;
 
 class Mock implements IArrayable
 {
@@ -15,10 +16,10 @@ class Mock implements IArrayable
 
   public function __construct()
   {
-    $this->setData(['key'=>true]);
+    $this->setData((object)['key'=>true]);
   }
 
-  public function setData(array $data)
+  public function setData(stdClass $data)
   {
     $this->data = $data;
   }

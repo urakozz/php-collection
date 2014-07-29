@@ -33,7 +33,7 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
     $this->assertFalse($collection->offsetExists(1));
 
     $data1 = clone $data;
-    $data1->setData(['key'=>100]);
+    $data1->setData((object)['key'=>100]);
 
     $collection->push($data1);
 
@@ -78,7 +78,7 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
     $this->assertInstanceOf('IteratorIterator', $it);
     foreach($filteredIterator as $item)
     {
-      $this->assertInternalType('array', $item);
+      $this->assertInstanceOf('stdClass', $item);
       $this->assertTrue($item === $data->toArray());
     }
   }
@@ -98,9 +98,9 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
 
     foreach($array as $item)
     {
-      $this->assertInternalType('array', $item);
-      $this->assertTrue(isset($item['key']));
-      $this->assertFalse(isset($item['id']));
+      $this->assertInstanceOf('stdClass', $item);
+      $this->assertTrue(isset($item->key));
+      $this->assertFalse(isset($item->id));
     }
   }
 
@@ -113,7 +113,8 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
     $collection->push($data);
 
     $collection->addModifier(function(&$item){
-      $item['__id'] = $item['key'];
+
+      $item->__id = $item->key;
     });
 
     $array = $collection->toArray();
