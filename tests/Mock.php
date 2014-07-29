@@ -15,7 +15,12 @@ class Mock implements IArrayable
 
   public function __construct()
   {
-    $this->data = ['key'=>true];
+    $this->setData(['key'=>true]);
+  }
+
+  public function setData(array $data)
+  {
+    $this->data = $data;
   }
 
   /**

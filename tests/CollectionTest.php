@@ -10,9 +10,6 @@ use Kozz\Components\Collection;
 
 class CollectionTest extends \PHPUnit_Framework_TestCase
 {
-  protected $codeGuy;
-  protected function _before() {}
-  protected function _after()  {}
 
   public function testInit()
   {
@@ -20,7 +17,46 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
     $this->assertInstanceOf('Kozz\Components\Collection', $collection);
   }
 
-  public function testCollection()
+  public function testArrayAccessCountable()
+  {
+    $data = new Mock();
+    $collection = new Collection();
+    $collection->push($data);
+
+    $this->assertEquals(1, $collection->count());
+    $this->assertEquals(1, count($collection));
+    $this->assertTrue($collection->get(0) === $data);
+    $this->assertTrue($collection->offsetGet(0) === $data);
+    $this->assertTrue($collection[0] === $data);
+    $this->assertTrue(isset($collection[0]));
+    $this->assertTrue($collection->offsetExists(0));
+    $this->assertFalse($collection->offsetExists(1));
+
+    $data1 = clone $data;
+    $data1->setData(['key'=>100]);
+
+    $collection->push($data1);
+
+    $this->assertEquals(2, $collection->count());
+    $this->assertTrue($collection[1] === $data1);
+    $this->assertTrue(isset($collection[1]));
+
+    unset($collection[1]);
+
+    $this->assertEquals(1, $collection->count());
+    $this->assertTrue($collection->get(0) === $data);
+    $this->assertTrue($collection->offsetExists(0));
+    $this->assertFalse($collection->offsetExists(1));
+
+    $collection[] = $data1;
+
+    $this->assertEquals(2, $collection->count());
+    $this->assertTrue($collection[1] === $data1);
+    $this->assertTrue(isset($collection[1]));
+
+  }
+
+  public function testToArray()
   {
     $data = new Mock();
 
@@ -29,8 +65,15 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
     $collection->push($data);
 
     $array = $collection->toArray();
+
     $this->assertInternalType('array', $array);
     $this->assertEquals(2, count($array));
+
+    foreach($array as $item)
+    {
+      $this->assertTrue(isset($item['key']));
+      $this->assertFalse(isset($item['id']));
+    }
   }
 
   public function testModifier()
@@ -40,10 +83,10 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
     $collection = new Collection();
     $collection->push($data);
     $collection->push($data);
+
     $collection->addModifier(function(&$item){
-        $item['id'] = isset($item['id']) ? $item['id'] : true;
-        $item['__id'] = $item['id'];
-      });
+      $item['__id'] = $item['key'];
+    });
 
     $array = $collection->toArray();
     $this->assertInternalType('array', $array);
