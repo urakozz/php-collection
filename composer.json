@@ -1,0 +1,44 @@
+{
+  "name": "kozz/collection",
+  "type": "library",
+  "description": "Powerful Data Storage",
+  "keywords": ["collection", "Storage", "Iterator"],
+  "homepage": "http://github.com/urakozz/php-collection",
+  "license": "MIT",
+
+  "authors": [
+    {
+      "name": "Yury Kozyrev",
+      "email": "urakozz@gmail.com",
+      "homepage": "https://github.com/urakozz"
+    }
+  ],
+
+  "require": {
+    "php": ">=5.4.0"
+  },
+
+  "suggest": {
+    "ext-curl": "Guzzle will use specific adapters if cURL is present"
+  },
+
+  "autoload": {
+    "psr-4": {
+      "Kozz\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Kozz\\Tests\\": "tests/"
+    }
+  },
+  "require-dev": {
+    "phpunit/phpunit": "~4.0"
+  },
+
+  "extra": {
+    "branch-alias": {
+      "dev-master": "1.0.x-dev"
+    }
+  }
+}
