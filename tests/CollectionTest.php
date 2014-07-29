@@ -56,6 +56,33 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
 
   }
 
+  public function testIterator()
+  {
+    $data = new Mock();
+
+    $collection = new Collection();
+    $collection->push($data);
+    $collection->push($data);
+
+    $it = $collection->getIterator();
+
+    $this->assertInstanceOf('IteratorIterator', $it);
+    foreach($it as $item)
+    {
+      $this->assertInstanceOf('Kozz\Tests\Mock', $item);
+      $this->assertTrue($item === $data);
+    }
+
+    $filteredIterator = $collection->getFilterIterator();
+
+    $this->assertInstanceOf('IteratorIterator', $it);
+    foreach($filteredIterator as $item)
+    {
+      $this->assertInternalType('array', $item);
+      $this->assertTrue($item === $data->toArray());
+    }
+  }
+
   public function testToArray()
   {
     $data = new Mock();
