@@ -54,6 +54,25 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
     $this->assertTrue($collection[1] === $data1);
     $this->assertTrue(isset($collection[1]));
 
+    $collection[1] = $data;
+
+    $this->assertEquals(2, $collection->count());
+    $this->assertTrue($collection[1] === $data);
+    $this->assertTrue(isset($collection[1]));
+
+  }
+
+  public function testFrom()
+  {
+    $data = new Mock();
+    $array = [];
+    $array[] = $data;
+    $array[] = $data;
+
+    $collection = Collection::from(new \ArrayIterator($array));
+    $this->assertEquals(2, $collection->count());
+    $this->assertTrue($data === $collection[0]);
+    $this->assertTrue($data === $collection[1]);
   }
 
   public function testIterator()

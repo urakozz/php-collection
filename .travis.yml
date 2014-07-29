@@ -7,7 +7,15 @@ php:
   - hhvm
 
 before_script:
-  - composer install
+  - composer self-update
+  - composer install --dev --no-interaction
+  - mkdir -p build/logs
+  - echo 'date.timezone = "America/Los_Angeles"' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
+  - export COVERALLS_RUN_LOCALLY=1
+  - export COVERALLS_REPO_TOKEN=kTvk73AvQhuHaFXMGLTtXyfNg8cUsyJNo
+
+after_script:
+  - php vendor/bin/coveralls -v
 
 matrix:
   allow_failures:
