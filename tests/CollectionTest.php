@@ -48,6 +48,7 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
     $this->assertTrue($collection->offsetExists(0));
     $this->assertFalse($collection->offsetExists(1));
 
+    /** @var $collection Collection */
     $collection[] = $data1;
 
     $this->assertEquals(2, $collection->count());
@@ -59,6 +60,16 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
     $this->assertEquals(2, $collection->count());
     $this->assertTrue($collection[1] === $data);
     $this->assertTrue(isset($collection[1]));
+
+    $collection->remove(1);
+
+    $this->assertFalse($collection->exists(1));
+
+    $collection->push($data1);
+    $this->assertTrue($collection->get(1) === $data1);
+
+    $collection->set(1, $data);
+    $this->assertTrue($collection->get(1) === $data);
 
   }
 
@@ -85,7 +96,7 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
 
     $it = $collection->getIterator();
 
-    $this->assertInstanceOf('IteratorIterator', $it);
+    $this->assertInstanceOf('Iterator', $it);
     foreach($it as $item)
     {
       $this->assertInstanceOf('Kozz\Tests\Mock', $item);
@@ -94,7 +105,7 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
 
     $filteredIterator = $collection->getFilterIterator();
 
-    $this->assertInstanceOf('IteratorIterator', $it);
+    $this->assertInstanceOf('Iterator', $it);
     foreach($filteredIterator as $item)
     {
       $this->assertInternalType('array', $item);

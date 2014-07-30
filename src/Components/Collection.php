@@ -5,6 +5,7 @@ namespace Kozz\Components;
 use ArrayAccess;
 use Closure;
 use Countable;
+use Iterator;
 use IteratorAggregate;
 use IteratorIterator;
 use SplDoublyLinkedList;
@@ -51,6 +52,68 @@ class Collection implements ArrayAccess, IteratorAggregate, Countable, IArrayabl
   }
 
   /**
+   * @param $value
+   */
+  public function push($value)
+  {
+    $this->container->push($value);
+  }
+
+  /**
+   * @param null $offset
+   * @param      $value
+   */
+  public function set($offset = null, $value)
+  {
+    $this->offsetSet($offset, $value);
+  }
+
+  /**
+   * @param $offset
+   *
+   * @return mixed
+   */
+  public function get($offset)
+  {
+    return $this->offsetGet($offset);
+  }
+
+  /**
+   * @param $offset
+   * @return void
+   */
+  public function remove($offset)
+  {
+    $this->offsetUnset($offset);
+  }
+
+  /**
+   * @return int
+   */
+  public function count()
+  {
+    return $this->container->count();
+  }
+
+  /**
+   * @param $offset
+   *
+   * @return bool
+   */
+  public function exists($offset)
+  {
+    return $this->offsetExists($offset);
+  }
+
+  /**
+   * @param callable $modifier
+   */
+  public function addModifier(Closure $modifier)
+  {
+    $this->modifiers->enqueue($modifier);
+  }
+
+  /**
    * @param mixed $offset
    *
    * @return bool
@@ -94,32 +157,6 @@ class Collection implements ArrayAccess, IteratorAggregate, Countable, IArrayabl
   }
 
   /**
-   * @param $value
-   */
-  public function push($value)
-  {
-    $this->container->push($value);
-  }
-
-  /**
-   * @param $value
-   *
-   * @return mixed
-   */
-  public function get($value)
-  {
-    return $this->container[$value];
-  }
-
-  /**
-   * @return int
-   */
-  public function count()
-  {
-    return $this->container->count();
-  }
-
-  /**
    * @return array
    */
   public function toArray()
@@ -127,17 +164,12 @@ class Collection implements ArrayAccess, IteratorAggregate, Countable, IArrayabl
     return iterator_to_array($this->getFilterIterator());
   }
 
-  public function addModifier(Closure $modifier)
-  {
-    $this->modifiers->enqueue($modifier);
-  }
-
   /**
-   * @return IteratorIterator - An instance of an object implementing Iterator and Traversable
+   * @return Iterator - An instance of an object implementing Iterator and Traversable
    */
   public function getIterator()
   {
-    return new IteratorIterator($this->container);
+    return $this->container;
   }
 
   /**
