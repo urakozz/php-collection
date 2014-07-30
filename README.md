@@ -6,7 +6,10 @@ PHP Collection
 [![Packagist](http://img.shields.io/packagist/v/kozz/collection.svg)](https://packagist.org/packages/kozz/collection)
 [![License](http://img.shields.io/packagist/l/kozz/collection.svg)](https://packagist.org/packages/kozz/collection)
 
-Data Structure based on SplDoublyLinkedList with some advantages
+Data Structure based on SplDoublyLinkedList with some advantages:
+
+- Regular array compatiable (`ArrayAccess` interface implemented)
+- Using Lamda Modifiers (see `addModifier` method)
 
 Installation
 ------------
