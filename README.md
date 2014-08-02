@@ -154,9 +154,11 @@ Modern approach might looks something like this:
     $it = new ArrayIterator($array);
     $it = new CallbackFilterIterator($it, function(&$item){
         ++$item;
+        return true;
     });
     $it = new CallbackFilterIterator($it, function(&$item){
         if($item % 2 === 0){ $item += 1000; }
+        return true;
     });
     foreach($array as $item)
     {
