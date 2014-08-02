@@ -2,6 +2,11 @@
 /**
  * @author Ura Kozyrev <yk@multiship.ru>
  */
+ 
+ini_set('xdebug.remote_autostart', 0);
+ini_set('xdebug.remote_enable', 0);
+ini_set('xdebug.profiler_enable', 0);
+if(function_exists('xdebug_disable')) { xdebug_disable(); }
 
 namespace Kozz\Tests;
 
@@ -33,7 +38,7 @@ class PerformanceTest extends \PHPUnit_Framework_TestCase
     $collectionEvent  = $stopwatch->stop('collection');
     $collectionTime   = $collectionEvent->getDuration();
 
-    $this->assertTrue(abs($collectionTime - $arrayTime) < $collectionTime*0.2);
+    $this->assertTrue(abs($collectionTime - $arrayTime) < $collectionTime*0.3);
 
   }
 
