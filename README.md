@@ -37,36 +37,46 @@ Examples
 
 **Initializing from any Traversable**
 
+```php
     $array = range(1,1000);
     $collection = Collection::from(new \ArrayIterator($array));
+```
     
 **Adding element**
 
+```php
     $element = 'string';
     $collection->push($element);
     //or
     $collection[] = $element;
+```
 
 **Replacing element**
 
+```php
     $element2 = new stdClass();
     $collection->set(0, $element2);
     //or
     $collection[0] = $element2;
     // This throws Exception (offset 100 not exists)
     $collection->set(100, $element2);
+```
     
 **Check offset**
 
+```php
     $collection->exists(0); 
     //or
     isset($collection[0]);
+```
     
 **Retrieve element**
 
+```php
     $element = $collection->get(0); 
     //or
     $element = $collection[0]);
+```
 
 
     
