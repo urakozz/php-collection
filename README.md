@@ -82,7 +82,48 @@ Examples
 
 Sometimes you should modify your data in collection
 
-Old-school way looks like this:
+#### With Collection
+
+And with this `Collection` you are able simply add modifier in just one line:
+
+```php
+    use Kozz\Components\Collection;
+    
+    $array = range(1,100);
+    $collection = Collection::from(new ArrayIterator($array));
+    $collection->addModifier(function(&item){
+        ++$item;
+    });
+    $collection->addModifier(function(&item){
+        if($item % 2 === 0){ $item += 1000; }
+    });
+```
+
+So now Modifiers are stored in `Collection` and you have two ways to apply it:
+
+1. use `getFilterIterator()` method to get an Iterator with all applied modifiers:
+
+```php
+    foreach($collection->getFilterIterator() as $item)
+    {
+        //do stuff
+    }
+```
+
+2. Call `->toArray()` that calls `getFilterIterator()` :
+
+```php
+    $array = $collection->toArray();
+    foreach($array as $item)
+    {
+        //do stuff
+    }
+```
+#### Without Collection
+
+You actually can modify your data in other ways:
+
+Old-school approach looks like this:
 
 ```php
     $array = range(1,100);
@@ -117,42 +158,6 @@ Modern approach might looks something like this:
     $it = new CallbackFilterIterator($it, function(&$item){
         if($item % 2 === 0){ $item += 1000; }
     });
-    foreach($array as $item)
-    {
-        //do stuff
-    }
-```
-
-And with this `Collection` you are able simply add modifier in just one line:
-
-```php
-    use Kozz\Components\Collection;
-    
-    $array = range(1,100);
-    $collection = Collection::from(new ArrayIterator($array));
-    $collection->addModifier(function(&item){
-        ++$item;
-    });
-    $collection->addModifier(function(&item){
-        if($item % 2 === 0){ $item += 1000; }
-    });
-```
-
-So now Modifiers are stored in `Collection` and you have two ways to apply it:
-
-1. use `getFilterIterator()` method to get an Iterator with all applied modifiers:
-
-```php
-    foreach($collection->getFilterIterator() as $item)
-    {
-        //do stuff
-    }
-```
-
-2. Call `->toArray()` that calls `getFilterIterator()` :
-
-```php
-    $array = $collection->toArray();
     foreach($array as $item)
     {
         //do stuff
