@@ -30,8 +30,10 @@ Examples
 
 **Initializing**
 
-    use Kozz\Component\Collection;
+```php
+    use Kozz\Components\Collection;
     $collection = new Collection();
+```
 
 **Initializing from any Traversable**
 
