@@ -36,7 +36,7 @@ class PerformanceTest extends \PHPUnit_Framework_TestCase
     $collectionEvent  = $stopwatch->stop('collection');
     $collectionTime   = $collectionEvent->getDuration();
 
-    $this->assertTrue(abs($collectionTime - $arrayTime) < $collectionTime*0.5);
+    $this->assertTrue(abs($collectionTime - $arrayTime) < $collectionTime);
 
   }
 

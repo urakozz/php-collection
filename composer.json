@@ -2,7 +2,7 @@
   "name": "kozz/collection",
   "type": "library",
   "description": "Powerful Data Storage based on SplDoublyLinkedList",
-  "keywords": ["Collection", "Storage", "Iterator", "SPL", "LinkedList"],
+  "keywords": ["Collection", "Storage", "Iterator", "SPL", "LinkedList", "php", "cursor", "iterator"],
   "homepage": "http://github.com/urakozz/php-collection",
   "license": "MIT",
 
