@@ -11,6 +11,7 @@ use IteratorIterator;
 use SplDoublyLinkedList;
 use SplQueue;
 use Traversable;
+use ArrayIterator;
 
 class Collection implements ArrayAccess, IteratorAggregate, Countable, IArrayable
 {
@@ -26,12 +27,12 @@ class Collection implements ArrayAccess, IteratorAggregate, Countable, IArrayabl
   protected $modifiers;
 
   /**
-   * @param void
+   * @param \Iterator $iterator
    */
-  public function __construct()
+  public function __construct(Iterator $iterator = null)
   {
-    $this->container     = new SplDoublyLinkedList();
-    $this->modifiers     = new SplQueue();
+    $this->container = $iterator ? : new SplDoublyLinkedList();
+    $this->modifiers = new SplQueue();
     $this->ensureArrayModifier();
   }
 
@@ -51,12 +52,23 @@ class Collection implements ArrayAccess, IteratorAggregate, Countable, IArrayabl
     return $self;
   }
 
+  public function iteratorToList()
+  {
+    $list = new SplDoublyLinkedList();
+    foreach ($this->container as $item)
+    {
+      $list->push($item);
+    }
+    $this->container = $list;
+    unset($list);
+  }
+
   /**
    * @param $value
    */
   public function push($value)
   {
-    $this->container->push($value);
+    $this->offsetSet(null, $value);
   }
 
   /**
@@ -80,19 +92,12 @@ class Collection implements ArrayAccess, IteratorAggregate, Countable, IArrayabl
 
   /**
    * @param $offset
+   *
    * @return void
    */
   public function remove($offset)
   {
     $this->offsetUnset($offset);
-  }
-
-  /**
-   * @return int
-   */
-  public function count()
-  {
-    return $this->container->count();
   }
 
   /**
@@ -120,6 +125,11 @@ class Collection implements ArrayAccess, IteratorAggregate, Countable, IArrayabl
    */
   public function offsetExists($offset)
   {
+    if (!$this->container instanceof ArrayAccess)
+    {
+      $this->iteratorToList();
+    }
+
     return $this->container->offsetExists($offset);
   }
 
@@ -130,6 +140,11 @@ class Collection implements ArrayAccess, IteratorAggregate, Countable, IArrayabl
    */
   public function offsetGet($offset)
   {
+    if (!$this->container instanceof ArrayAccess)
+    {
+      $this->iteratorToList();
+    }
+
     return $this->container->offsetGet($offset);
   }
 
@@ -139,6 +154,11 @@ class Collection implements ArrayAccess, IteratorAggregate, Countable, IArrayabl
    */
   public function offsetSet($offset = null, $value)
   {
+    if (!$this->container instanceof ArrayAccess)
+    {
+      $this->iteratorToList();
+    }
+
     if (null === $offset)
     {
       $this->container->push($value);
@@ -153,7 +173,24 @@ class Collection implements ArrayAccess, IteratorAggregate, Countable, IArrayabl
    */
   public function offsetUnset($offset)
   {
+    if (!$this->container instanceof ArrayAccess)
+    {
+      $this->iteratorToList();
+    }
     $this->container->offsetUnset($offset);
+  }
+
+  /**
+   * @return int
+   */
+  public function count()
+  {
+    if (!$this->container instanceof Countable)
+    {
+      $this->iteratorToList();
+    }
+
+    return $this->container->count();
   }
 
   /**
@@ -161,7 +198,7 @@ class Collection implements ArrayAccess, IteratorAggregate, Countable, IArrayabl
    */
   public function toArray()
   {
-    return iterator_to_array($this->getFilterIterator());
+    return array_values(iterator_to_array($this->getFilterIterator()));
   }
 
   /**
@@ -179,10 +216,12 @@ class Collection implements ArrayAccess, IteratorAggregate, Countable, IArrayabl
   {
     $it = $this->getIterator();
 
-    while($this->modifiers->count())
+    $modifiers = clone $this->modifiers;
+    while ($modifiers->count())
     {
-      $it = new \CallbackFilterIterator($it, $this->getFilterCallback($this->modifiers->dequeue()));
+      $it = new \CallbackFilterIterator($it, $this->getFilterCallback($modifiers->dequeue()));
     }
+    unset($modifiers);
     return $it;
   }
 

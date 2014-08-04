@@ -35,11 +35,23 @@ Examples
     $collection = new Collection();
 ```
 
-**Initializing from any Traversable**
+**Initializing from any Traversable or Iterator**
+
+1. You can initiate collection as SplDoublyLinkedList-based structure with `Collection::from($traversable)`
 
 ```php
-    $array = range(1,1000);
-    $collection = Collection::from(new \ArrayIterator($array));
+    $traversable = new \ArrayIterator(range(1,1000));
+    $collection = Collection::from($traversable);
+```
+
+2. You also able use your `Iterator` as `Collection`'s data container with `new Collection($iterator)`.
+Your iterator will converts to SplDoublyLinkedList once you try use any method from `ArrayAccess` or `Countable` interfaces implemented in `Collection`.
+This is good solution if your iterator is cursor in big DB Data Set and you need just add some modifiers with `addModifier`
+
+```php
+    $mongo = new \MongoClient();
+    $cursor = $mongo->selectDB('testDB')->selectCollection('testCollection')->find();
+    $collection = new Collection($cursor);
 ```
     
 **Adding element**
@@ -75,7 +87,14 @@ Examples
 ```php
     $element = $collection->get(0); 
     //or
-    $element = $collection[0]);
+    $element = $collection[0];
+```
+
+**Remove element**
+```php
+    $element = $collection->remove(0);
+    //or
+    $element = unset($collection[0]);
 ```
 
 ### Modifiers
@@ -119,6 +138,23 @@ So now Modifiers are stored in `Collection` and you have two ways to apply it:
         //do stuff
     }
 ```
+
+Modifiers are quite helpful to process DB Data Sets:
+
+```php
+    $mongo = new \MongoClient();
+    $cursor = $mongo->selectDB('testDB')->selectCollection('testCollection')->find();
+    $collection = new Collection($cursor);
+    $collection->addModifier(function(&$item){
+        $item['id'] = (string)$item['_id'];
+        unset($item['_id']);
+    });
+    foreach($collection->getFilterIterator() as $item)
+    {
+        //$item = ['id'=>'53df4992da722e2b550041af', 'value'=>1]
+    }
+```
+
 #### Without Collection
 
 You actually can modify your data in other ways:

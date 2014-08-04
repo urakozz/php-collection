@@ -152,4 +152,119 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
     $this->assertTrue(array_key_exists('__id', $array[0]));
   }
 
+  public function testMongoCursor()
+  {
+    $mongo = new \MongoClient();
+    $c = $mongo->selectDB('testDB')->selectCollection('testCollection');
+
+    for($i = 0; $i<=20; $i++)
+    {
+      $c->insert(['value'=>$i]);
+    }
+
+    $cursor = $c->find();
+
+    $collection = new Collection($cursor);
+    $collection->addModifier(function(&$item){
+      $item['id'] = (string)$item['_id'];
+      unset($item['_id']);
+    });
+
+    foreach($collection as $item)
+    {
+      $this->assertTrue(isset($item['_id']));
+      $this->assertNotEmpty($item['_id']);
+      $this->assertFalse(isset($item['id']));
+    }
+
+    foreach($collection->getFilterIterator() as $item)
+    {
+      $this->assertTrue(isset($item['id']));
+      $this->assertNotEmpty($item['id']);
+      $this->assertFalse(isset($item['_id']));
+    }
+
+    foreach($collection->toArray() as $item)
+    {
+      $this->assertTrue(isset($item['id']));
+      $this->assertNotEmpty($item['id']);
+      $this->assertFalse(isset($item['_id']));
+    }
+
+    $c->drop();
+
+  }
+
+  public function testIteratorToList()
+  {
+    $mongo = new \MongoClient();
+    $c = $mongo->selectDB('testDB')->selectCollection('testCollection');
+
+    for($i = 0; $i<=10; $i++)
+    {
+      $c->insert(['value'=>$i]);
+    }
+
+    $collection = new Collection($c->find());
+    $this->assertInstanceOf('MongoCursor', $collection->getIterator());
+
+    $collection->iteratorToList();
+    $this->assertInstanceOf('SplDoublyLinkedList', $collection->getIterator());
+
+    $c->drop();
+  }
+
+  public function testIteratorConvert()
+  {
+    $mongo = new \MongoClient();
+    $c = $mongo->selectDB('testDB')->selectCollection('testCollection');
+
+    for($i = 0; $i<=10; $i++)
+    {
+      $c->insert(['value'=>$i]);
+    }
+
+    $cursor = $c->find();
+
+    $collection = new Collection($cursor);
+    $this->assertInstanceOf('MongoCursor', $collection->getIterator());
+
+    $res = $collection->get(10);
+    $this->assertInstanceOf('SplDoublyLinkedList', $collection->getIterator());
+    $this->assertEquals(10, $res['value']);
+
+    $collection = new Collection($cursor);
+    $this->assertInstanceOf('MongoCursor', $collection->getIterator());
+
+    $collection->set(0, 100);
+    $this->assertInstanceOf('SplDoublyLinkedList', $collection->getIterator());
+    $this->assertEquals(100, $collection->get(0));
+
+    $collection = new Collection($cursor);
+    $this->assertInstanceOf('MongoCursor', $collection->getIterator());
+
+    $exists = $collection->exists(0);
+    $this->assertInstanceOf('SplDoublyLinkedList', $collection->getIterator());
+    $this->assertTrue($exists);
+
+    $collection = new Collection($cursor);
+    $elem1 = $collection->get(0);
+    $collection = new Collection($cursor);
+    $this->assertInstanceOf('MongoCursor', $collection->getIterator());
+    $collection->remove(0);
+
+    $this->assertInstanceOf('SplDoublyLinkedList', $collection->getIterator());
+    $elem2 = $collection->get(1);
+
+    $this->assertFalse($elem1 === $elem2);
+
+    $collection = new Collection($cursor);
+    $this->assertInstanceOf('MongoCursor', $collection->getIterator());
+    $count = $collection->count();
+    $this->assertInstanceOf('SplDoublyLinkedList', $collection->getIterator());
+    $this->assertEquals(11, $count);
+
+    $c->drop();
+  }
+
 } 
