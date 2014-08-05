@@ -39,20 +39,20 @@ Examples
 
 1. You can initiate collection as SplDoublyLinkedList-based structure with `Collection::from($traversable)`
 
-```php
-    $traversable = new \ArrayIterator(range(1,1000));
-    $collection = Collection::from($traversable);
-```
+    ```php
+        $traversable = new \ArrayIterator(range(1,1000));
+        $collection = Collection::from($traversable);
+    ```
 
 2. You also able use your `Iterator` as `Collection`'s data container with `new Collection($iterator)`.
 Your iterator will converts to SplDoublyLinkedList once you try use any method from `ArrayAccess` or `Countable` interfaces implemented in `Collection`.
 This is good solution if your iterator is cursor in big DB Data Set and you need just add some modifiers with `addModifier`
 
-```php
-    $mongo = new \MongoClient();
-    $cursor = $mongo->selectDB('testDB')->selectCollection('testCollection')->find();
-    $collection = new Collection($cursor);
-```
+    ```php
+        $mongo = new \MongoClient();
+        $cursor = $mongo->selectDB('testDB')->selectCollection('testCollection')->find();
+        $collection = new Collection($cursor);
+    ```
     
 **Adding element**
 
