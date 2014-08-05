@@ -44,7 +44,7 @@ class PerformanceTest extends \PHPUnit_Framework_TestCase
   {
     $stopwatch = new Stopwatch();
 
-    $range = range(1, 50000);
+    $range = range(1, 100000);
     $array = new \ArrayIterator($range);
     $collection = new Collection($array);
 
@@ -64,7 +64,7 @@ class PerformanceTest extends \PHPUnit_Framework_TestCase
     $collectionEvent = $stopwatch->stop('collection');
     $collectionTime  = $collectionEvent->getDuration();
 
-    $this->assertTrue($collectionTime < $arrayTime);
+    $this->assertTrue($collectionTime < $arrayTime*1.1);
   }
 
 
