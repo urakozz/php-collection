@@ -3,7 +3,8 @@ PHP Collection
 
 [![Build Status](https://travis-ci.org/urakozz/php-collection.svg?branch=master)](https://travis-ci.org/urakozz/php-collection)
 [![Coverage Status](https://coveralls.io/repos/urakozz/php-collection/badge.png)](https://coveralls.io/r/urakozz/php-collection)
-[![Packagist](http://img.shields.io/packagist/v/kozz/collection.svg)](https://packagist.org/packages/kozz/collection)
+[![Latest Stable Version](https://poser.pugx.org/kozz/collection/v/stable.svg)](https://packagist.org/packages/kozz/collection)
+[![Latest Unstable Version](https://poser.pugx.org/kozz/collection/v/unstable.svg)](https://packagist.org/packages/kozz/collection)
 [![License](http://img.shields.io/packagist/l/kozz/collection.svg)](https://packagist.org/packages/kozz/collection)
 
 Data Structure based on SplDoublyLinkedList with some advantages:
