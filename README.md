@@ -104,19 +104,25 @@ Sometimes you should modify your data in collection
 
 #### With Collection
 
+Modifiers are quite helpful to process DB Data Sets.
 And with this `Collection` you are able simply add modifier in just one line:
 
 ```php
     use Kozz\Components\Collection;
     
-    $array = range(1,100);
-    $collection = Collection::from(new ArrayIterator($array));
-    $collection->addModifier(function(&item){
-        ++$item;
+    $mongo = new \MongoClient();
+    $cursor = $mongo->selectDB('testDB')->selectCollection('testCollection')->find();
+    //[0=>['_id'=>MongoId(...), 'value'=>123], ...]
+    
+    
+    $collection = new Collection($cursor);
+    $collection->addModifier(function(&$item){
+        $item['id'] = (string)$item['_id'];
     });
-    $collection->addModifier(function(&item){
-        if($item % 2 === 0){ $item += 1000; }
+    $collection->addModifier(function(&$item){
+        unset($item['_id']);
     });
+
 ```
 
 So now Modifiers are stored in `Collection` and you have two ways to apply it:
@@ -126,7 +132,7 @@ So now Modifiers are stored in `Collection` and you have two ways to apply it:
 ```php
     foreach($collection->getFilterIterator() as $item)
     {
-        //do stuff
+        // $item = ['id'=>'4af9f23d8ead0e1d32000000', 'value'=>123]
     }
 ```
 
@@ -134,72 +140,33 @@ So now Modifiers are stored in `Collection` and you have two ways to apply it:
 
 ```php
     $array = $collection->toArray();
+    //$item = [ 0=> ['id'=>'4af9f23d8ead0e1d32000000', 'value'=>123], ...]
     foreach($array as $item)
     {
         //do stuff
-    }
-```
-
-Modifiers are quite helpful to process DB Data Sets:
-
-```php
-    $mongo = new \MongoClient();
-    $cursor = $mongo->selectDB('testDB')->selectCollection('testCollection')->find();
-    $collection = new Collection($cursor);
-    $collection->addModifier(function(&$item){
-        $item['id'] = (string)$item['_id'];
-        unset($item['_id']);
-    });
-    foreach($collection->getFilterIterator() as $item)
-    {
-        //$item = ['id'=>'53df4992da722e2b550041af', 'value'=>1]
     }
 ```
 
 #### Without Collection
 
-You actually can modify your data in other ways:
-
-Old-school approach looks like this:
+You actually can modify your data with plain SPL:
 
 ```php
-    $array = range(1,100);
-    foreach($array as &$item)
-    {
-        ++$item;
-        unset($item);
-    }
-    foreach($array as &$item)
-    {
-        if($item % 2 === 0)
-        {
-            $item += 1000;
-        }
-        unset($item);
-    }
+    $mongo = new \MongoClient();
+    $cursor = $mongo->selectDB('testDB')->selectCollection('testCollection')->find();
+    
+    $it = new CallbackFilterIterator($cursor, function(&$item){
+        $item['id'] = (string)$item['_id'];
+        return true;
+    });
+    $it = new CallbackFilterIterator($it, function(&$item){
+        unset($item['_id']);
+        return true;
+    });
     
     foreach($array as $item)
     {
-        //do stuff
-    }
-```
-
-Modern approach might looks something like this:
-
-```php
-    $array = range(1,100);
-    $it = new ArrayIterator($array);
-    $it = new CallbackFilterIterator($it, function(&$item){
-        ++$item;
-        return true;
-    });
-    $it = new CallbackFilterIterator($it, function(&$item){
-        if($item % 2 === 0){ $item += 1000; }
-        return true;
-    });
-    foreach($array as $item)
-    {
-        //do stuff
+        // $item = ['id'=>'4af9f23d8ead0e1d32000000', 'value'=>123]
     }
 ```
 
