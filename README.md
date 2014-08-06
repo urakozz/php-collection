@@ -8,10 +8,14 @@ PHP Collection
 [![Latest Unstable Version](https://poser.pugx.org/kozz/collection/v/unstable.svg)](https://packagist.org/packages/kozz/collection)
 [![License](http://img.shields.io/packagist/l/kozz/collection.svg)](https://packagist.org/packages/kozz/collection)
 
-Data Structure based on SplDoublyLinkedList with some advantages:
+Data Structure based on SplDoublyLinkedList.
 
-- Regular array compatiable (`ArrayAccess` interface implemented)
+Numerical keys, consequentially increasing, no gaps possible.
+Quick sequential iterating.
+
+Advantages:
 - Using Lamda Modifiers (see `addModifier` method)
+- Regular array compatiable (`ArrayAccess` interface implemented)
 
 Installation
 ------------
