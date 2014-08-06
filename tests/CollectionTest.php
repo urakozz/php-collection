@@ -6,7 +6,7 @@
 namespace Kozz\Tests;
 
 
-use Kozz\Components\Collection;
+use Kozz\Components\Collection\Collection;
 
 class CollectionTest extends \PHPUnit_Framework_TestCase
 {
@@ -14,7 +14,7 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
   public function testInit()
   {
     $collection = new Collection();
-    $this->assertInstanceOf('Kozz\Components\Collection', $collection);
+    $this->assertInstanceOf('Kozz\Components\Collection\Collection', $collection);
   }
 
   public function testArrayAccessCountable()

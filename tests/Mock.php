@@ -6,7 +6,7 @@
 namespace Kozz\Tests;
 
 
-use Kozz\Components\IArrayable;
+use Kozz\Interfaces\IArrayable;
 
 class Mock implements IArrayable
 {

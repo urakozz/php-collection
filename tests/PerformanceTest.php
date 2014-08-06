@@ -9,7 +9,7 @@ ini_set('xdebug.remote_enable', 0);
 ini_set('xdebug.profiler_enable', 0);
 if(function_exists('xdebug_disable')) { xdebug_disable(); }
 
-use Kozz\Components\Collection;
+use Kozz\Components\Collection\Collection;
 use Symfony\Component\Stopwatch\Stopwatch;
 
 class PerformanceTest extends \PHPUnit_Framework_TestCase

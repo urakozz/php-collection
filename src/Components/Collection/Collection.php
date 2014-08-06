@@ -1,6 +1,6 @@
 <?php
 
-namespace Kozz\Components;
+namespace Kozz\Components\Collection;
 
 use ArrayAccess;
 use Closure;
@@ -12,6 +12,7 @@ use SplDoublyLinkedList;
 use SplQueue;
 use Traversable;
 use ArrayIterator;
+use Kozz\Interfaces\IArrayable;
 
 class Collection implements ArrayAccess, IteratorAggregate, Countable, IArrayable
 {

@@ -3,7 +3,7 @@
  * @author Ura Kozyrev <yk@multiship.ru>
  */
 
-namespace Kozz\Components;
+namespace Kozz\Interfaces;
 
 
 interface IArrayable {
