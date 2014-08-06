@@ -19,7 +19,7 @@ class PerformanceTest extends \PHPUnit_Framework_TestCase
   {
     $stopwatch = new Stopwatch();
 
-    $array = range(1, 50000);
+    $array = range(1, 100000);
     $collection = Collection::from(new \ArrayIterator($array));
 
     $stopwatch->start('array');
@@ -36,7 +36,7 @@ class PerformanceTest extends \PHPUnit_Framework_TestCase
     $collectionEvent  = $stopwatch->stop('collection');
     $collectionTime   = $collectionEvent->getDuration();
 
-    $this->assertTrue(abs($collectionTime - $arrayTime) < $collectionTime);
+    $this->assertTrue($collectionTime < $arrayTime*1.5);
 
   }
 
