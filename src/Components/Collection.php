@@ -17,17 +17,17 @@ class Collection implements ArrayAccess, IteratorAggregate, Countable, IArrayabl
 {
 
   /**
-   * @var \SplDoublyLinkedList
+   * @var SplDoublyLinkedList | Iterator
    */
   protected $container;
 
   /**
-   * @var \SplQueue
+   * @var SplQueue
    */
   protected $modifiers;
 
   /**
-   * @param \Iterator $iterator
+   * @param Iterator $iterator
    */
   public function __construct(Iterator $iterator = null)
   {
