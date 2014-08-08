@@ -160,12 +160,6 @@ class Collection implements ArrayAccess, IteratorAggregate, Countable, IArrayabl
       $this->iteratorToList();
     }
 
-    if (null === $offset)
-    {
-      $this->container->push($value);
-
-      return;
-    }
     $this->container->offsetSet($offset, $value);
   }
 
