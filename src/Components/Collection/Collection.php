@@ -28,9 +28,9 @@ class Collection implements ArrayAccess, IteratorAggregate, Countable, IArrayabl
   protected $modifiers;
 
   /**
-   * @param Iterator $iterator
+   * @param Traversable $iterator
    */
-  public function __construct(Iterator $iterator = null)
+  public function __construct(Traversable $iterator = null)
   {
     $this->container = $iterator ? : new SplDoublyLinkedList();
     $this->modifiers = new SplQueue();
@@ -42,7 +42,7 @@ class Collection implements ArrayAccess, IteratorAggregate, Countable, IArrayabl
    *
    * @return Collection
    */
-  public static function from(\Traversable $from)
+  public static function from(Traversable $from)
   {
     $self = new self();
     foreach ($from as $item)
