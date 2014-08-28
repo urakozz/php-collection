@@ -29,10 +29,8 @@ Add the package to your `composer.json` and run `composer update`.
     }
     
     
-Examples
---------
 
-### Basic Usage
+## Basic Usage
 
 **Initializing**
 
@@ -59,6 +57,81 @@ This is good solution if your iterator is cursor in big DB Data Set and you need
         $cursor = $mongo->selectDB('testDB')->selectCollection('testCollection')->find();
         $collection = new Collection($cursor);
     ```
+
+## Modifiers
+
+Sometimes you should modify your data in collection
+
+#### With Collection
+
+Modifiers are quite helpful to process DB Data Sets.
+And with this `Collection` you are able simply add modifier in just one line:
+
+```php
+    use Kozz\Components\Collection;
+    
+    $mongo = new \MongoClient();
+    $cursor = $mongo->selectDB('testDB')->selectCollection('testCollection')->find();
+    //[0=>['_id'=>MongoId(...), 'value'=>123], ...]
+    
+    
+    $collection = new Collection($cursor);
+    $collection->addModifier(function(&$item){
+        $item['id'] = (string)$item['_id'];
+    });
+    $collection->addModifier(function(&$item){
+        unset($item['_id']);
+    });
+
+```
+
+So now Modifiers are stored in `Collection` and you have two ways to apply it:
+
+1. use `getFilterIterator()` method to get an Iterator with all applied modifiers:
+
+    ```php
+        foreach($collection->getFilterIterator() as $item)
+        {
+            // $item = ['id'=>'4af9f23d8ead0e1d32000000', 'value'=>123]
+        }
+    ```
+
+2. Call `->toArray()` that calls `getFilterIterator()` :
+
+    ```php
+        $array = $collection->toArray();
+        //$item = [ 0=> ['id'=>'4af9f23d8ead0e1d32000000', 'value'=>123], ...]
+        foreach($array as $item)
+        {
+            //do stuff
+        }
+    ```
+
+#### Without Collection
+
+You actually can modify your data with plain SPL:
+
+```php
+    $mongo = new \MongoClient();
+    $cursor = $mongo->selectDB('testDB')->selectCollection('testCollection')->find();
+    
+    $it = new CallbackFilterIterator($cursor, function(&$item){
+        $item['id'] = (string)$item['_id'];
+        return true;
+    });
+    $it = new CallbackFilterIterator($it, function(&$item){
+        unset($item['_id']);
+        return true;
+    });
+    
+    foreach($array as $item)
+    {
+        // $item = ['id'=>'4af9f23d8ead0e1d32000000', 'value'=>123]
+    }
+```
+
+## ArrayAccess
+
     
 **Adding element**
 
@@ -102,79 +175,6 @@ This is good solution if your iterator is cursor in big DB Data Set and you need
     //or
     $element = unset($collection[0]);
 ```
-
-### Modifiers
-
-Sometimes you should modify your data in collection
-
-#### With Collection
-
-Modifiers are quite helpful to process DB Data Sets.
-And with this `Collection` you are able simply add modifier in just one line:
-
-```php
-    use Kozz\Components\Collection;
-    
-    $mongo = new \MongoClient();
-    $cursor = $mongo->selectDB('testDB')->selectCollection('testCollection')->find();
-    //[0=>['_id'=>MongoId(...), 'value'=>123], ...]
-    
-    
-    $collection = new Collection($cursor);
-    $collection->addModifier(function(&$item){
-        $item['id'] = (string)$item['_id'];
-    });
-    $collection->addModifier(function(&$item){
-        unset($item['_id']);
-    });
-
-```
-
-So now Modifiers are stored in `Collection` and you have two ways to apply it:
-
-1. use `getFilterIterator()` method to get an Iterator with all applied modifiers:
-
-```php
-    foreach($collection->getFilterIterator() as $item)
-    {
-        // $item = ['id'=>'4af9f23d8ead0e1d32000000', 'value'=>123]
-    }
-```
-
-2. Call `->toArray()` that calls `getFilterIterator()` :
-
-```php
-    $array = $collection->toArray();
-    //$item = [ 0=> ['id'=>'4af9f23d8ead0e1d32000000', 'value'=>123], ...]
-    foreach($array as $item)
-    {
-        //do stuff
-    }
-```
-
-#### Without Collection
-
-You actually can modify your data with plain SPL:
-
-```php
-    $mongo = new \MongoClient();
-    $cursor = $mongo->selectDB('testDB')->selectCollection('testCollection')->find();
-    
-    $it = new CallbackFilterIterator($cursor, function(&$item){
-        $item['id'] = (string)$item['_id'];
-        return true;
-    });
-    $it = new CallbackFilterIterator($it, function(&$item){
-        unset($item['_id']);
-        return true;
-    });
-    
-    foreach($array as $item)
-    {
-        // $item = ['id'=>'4af9f23d8ead0e1d32000000', 'value'=>123]
-    }
-```
-
  
     
     
